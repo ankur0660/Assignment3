@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/switcher"
+        android:actionLayout="@layout/switch_layout"
+        android:title="switcher"
+        android:checkable="true"
+        app:showAsAction="withText|ifRoom">
+
+
+    </item>
+    <item
+        android:title="spinnerMenu"
+        android:id="@+id/spinnerMenu"
+
+
+
+        app:showAsAction="always">
+
+    </item>
+
+
+</menu>

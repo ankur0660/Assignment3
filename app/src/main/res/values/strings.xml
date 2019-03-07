@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Assignment3</string>
+    <string-array name="sort">
+        <item> Sort By Name </item>
+        <item> Sort By Roll No </item>
+    </string-array>
+</resources>
