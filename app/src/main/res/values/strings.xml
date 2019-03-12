@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Assignment3</string>
+    <string name="add_new_student">Add New Student</string>
+    <string name="Edit">EDIT</string>
     <string-array name="sort">
         <item> Sort By Name </item>
         <item> Sort By Roll No </item>

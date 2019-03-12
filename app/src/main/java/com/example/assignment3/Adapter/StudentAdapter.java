@@ -1,6 +1,7 @@
 package com.example.assignment3.Adapter;
 
 import android.app.AlertDialog;
+import android.app.usage.UsageEvents;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,15 +18,17 @@ import android.widget.Toast;
 import com.example.assignment3.MainActivity;
 import com.example.assignment3.R;
 import com.example.assignment3.Student;
-import com.example.assignment3.StudentDetailsEnter;
+import com.example.assignment3.StudentDetailsActivity;
+
 
 import java.util.ArrayList;
 
 public class StudentAdapter  extends RecyclerView.Adapter<StudentAdapter.viewholder>{
 ArrayList<Student> students;
 Context ctx;
-final String CAT_VIEW="view";
-final String CAT_EDIT="edit";
+
+private clickRecycleItemListener mListener;
+
 public StudentAdapter(ArrayList<Student> students, Context ctx){
 this.students=students;
 this.ctx=ctx;
@@ -81,39 +84,14 @@ itemView.setOnClickListener(this);
 
             @Override
             public void onClick(View v) {
-                String[] options={"View","Edit","Delete"};
-                AlertDialog.Builder builder=new AlertDialog.Builder(ctx);
-                builder.setItems(options, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        switch (which){
-                       case 0:
-                           ctx.startActivity(new Intent(ctx,StudentDetailsEnter.class).addCategory(CAT_VIEW).putExtra("position", getAdapterPosition()));
-                      break;
-                       case 1:
-
-                           ctx.startActivity(new Intent(ctx,StudentDetailsEnter.class).addCategory(CAT_EDIT).putExtra("position", getAdapterPosition()));
-                           break;
-                            case 2:
-                            MainActivity.student.remove(getAdapterPosition());
-                            MainActivity.studentAdapter.notifyDataSetChanged();
-
-
-
-                   }
-                    }
-                });
-                AlertDialog dialog=builder.create();
-dialog.show();
-
-
- //    int position=getAdapterPosition();
-   //   Toast toast=Toast.makeText(ctx,students.get(position).getRoll(),Toast.LENGTH_LONG);
-     // toast.show();
-
-
+                mListener=(clickRecycleItemListener)ctx;
+                mListener.onItemClick(getAdapterPosition());
             }
         }
-    }
+
+public interface clickRecycleItemListener{
+    void onItemClick(int position);
+
+}
+}
 
