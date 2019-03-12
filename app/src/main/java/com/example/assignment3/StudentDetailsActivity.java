@@ -121,6 +121,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
         rollEdit.setTextSize(50);
     }
 
+    
 
     /*
      @Params View Button
