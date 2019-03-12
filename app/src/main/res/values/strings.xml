@@ -2,6 +2,10 @@
     <string name="app_name">Assignment3</string>
     <string name="add_new_student">Add New Student</string>
     <string name="Edit">EDIT</string>
+    <string name="error_roll">enter a Roll No</string>
+    <string name="error_name">enter a name</string>
+    <string name="dup_error">duplicate roll</string>
+    <string name="toast_stu_added">Student Added</string>
     <string-array name="sort">
         <item> Sort By Name </item>
         <item> Sort By Roll No </item>

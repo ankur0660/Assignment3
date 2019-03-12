@@ -4,18 +4,14 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.assignment3.Adapter.StudentAdapter;
-
 import java.util.ArrayList;
-import java.util.Iterator;
+
 
 public class StudentDetailsActivity extends AppCompatActivity {
 
@@ -29,19 +25,46 @@ public class StudentDetailsActivity extends AppCompatActivity {
     private String name;
     private String roll;
     private Integer POSITION;
+    private final String CAT_VIEW="view";
+    private final String CAT_EDIT="edit";
 
-    private final String ROLLEXTRA = "rollEdit";
-    private final String NAMEEXTRA = "nameEdit";
+    private final String ROLL_EXTRA = "rollEdit";
+    private final String NAME_EXTRA = "nameEdit";
 
 
     /*
  initialize ArrayList,intent,poisition,rollEdit,nameEdit,Button
  */
+    /*
+     @Params View Button
+     on Click function for adding a new student
+     */
+    public void onClickSave(View view) {
+
+
+        name = nameEdit.getText().toString();
+        roll = rollEdit.getText().toString();
+        if (uniqueValidation()) {
+//MainActivity.debug();
+            intent.putExtra(NAME_EXTRA, name);
+            intent.putExtra(ROLL_EXTRA, roll);
+            MainActivity.debug();
+            setResult(RESULT_OK, intent);
+
+            Toast toast = Toast.makeText(this, getString(R.string.toast_stu_added), Toast.LENGTH_LONG);
+            toast.show();
+            finish();
+
+        }
+
+
+    }
+
 
     private void init() {
         intent = getIntent();
         if (getIntent().hasExtra("position")) {
-            POSITION = getIntent().getIntExtra("position", -1);
+        POSITION = getIntent().getIntExtra("position", -1);
         }
         nameEdit = findViewById(R.id.nameEdit);
         rollEdit = findViewById(R.id.rollEdit);
@@ -60,10 +83,10 @@ public class StudentDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_student_details_enter);
         init();
 
-        if (getIntent().hasCategory("view") || getIntent().hasCategory("edit")) {  //krna
+        if (getIntent().hasCategory(CAT_EDIT) || getIntent().hasCategory(CAT_VIEW)) {
 
 
-            if (getIntent().hasCategory("view")) {
+            if (getIntent().hasCategory(CAT_VIEW)) {
                 modifyUserInterface();
             } else {
                 nameEdit.setText(studentArrayList.get(POSITION).getName());
@@ -79,8 +102,8 @@ public class StudentDetailsActivity extends AppCompatActivity {
                         roll = rollEdit.getText().toString();
                         if (uniqueValidation()) {
 
-                            intent.putExtra(NAMEEXTRA, nameEdit.getText().toString());
-                            intent.putExtra(ROLLEXTRA, rollEdit.getText().toString());
+                            intent.putExtra(NAME_EXTRA, nameEdit.getText().toString());
+                            intent.putExtra(ROLL_EXTRA, rollEdit.getText().toString());
                             setResult(RESULT_OK, intent);
                             finish();
                         }
@@ -105,14 +128,14 @@ public class StudentDetailsActivity extends AppCompatActivity {
 
         btn.setVisibility(View.GONE);
 
-        nameEdit.setText(String.format("Name: %s", intent.getStringExtra(NAMEEXTRA)));
+        nameEdit.setText(String.format("Name: %s", intent.getStringExtra(NAME_EXTRA)));
         nameEdit.setGravity(Gravity.CENTER);
         nameEdit.setTypeface(null, Typeface.BOLD);
         nameEdit.setTypeface(null, Typeface.ITALIC);
         nameEdit.setTextSize(50);
 
 
-        rollEdit.setText("Roll No :" + intent.getStringExtra(ROLLEXTRA));
+        rollEdit.setText("Roll No :" + intent.getStringExtra(ROLL_EXTRA));
         rollEdit.setGravity(Gravity.CENTER);
 
         rollEdit.setGravity(Gravity.CENTER);
@@ -121,32 +144,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
         rollEdit.setTextSize(50);
     }
 
-    
 
-    /*
-     @Params View Button
-     on Click function for adding a new student
-     */
-    public void onClickSave(View view) {
-
-
-        name = nameEdit.getText().toString();
-        roll = rollEdit.getText().toString();
-        if (uniqueValidation()) {
-//MainActivity.debug();
-            intent.putExtra("nameEdit", name);
-            intent.putExtra("rollEdit", roll);
-            MainActivity.debug();
-            setResult(RESULT_OK, intent);
-
-            Toast toast = Toast.makeText(this, "Student Added", Toast.LENGTH_LONG);
-            toast.show();
-            finish();
-
-        }
-
-
-    }
 
 
     /*
@@ -155,12 +153,12 @@ public class StudentDetailsActivity extends AppCompatActivity {
     */
     boolean uniqueValidation() {
         if (nameEdit.getText().toString().isEmpty()) {
-            nameEdit.setError("enter a name");
+            nameEdit.setError(getString(R.string.error_name));
             return INVALID;
         }
 
         if (rollEdit.getText().toString().isEmpty()) {
-            rollEdit.setError("enter a Roll No");
+            rollEdit.setError(getString(R.string.error_roll));
             return INVALID;
 
 
@@ -185,7 +183,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
 
             if (student.getRoll().equals(roll)) {
 
-                rollEdit.setError("duplicate roll");
+                rollEdit.setError(getString(R.string.dup_error));
                 counter = -1;
                 break;
             }
