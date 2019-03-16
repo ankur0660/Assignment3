@@ -1,11 +1,8 @@
 package com.example.assignment3;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Debug;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,25 +10,24 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
+
+import com.example.assignment3.database.DbHelper;
+import com.example.assignment3.database.tables.StudentTable;
+import com.example.assignment3.util.Constants;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import com.example.assignment3.Adapter.StudentAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.zip.Inflater;
 
 public class MainActivity extends AppCompatActivity implements StudentAdapter.clickRecycleItemListener {
     private final int SORT_BY_NAME = 0;
@@ -47,13 +43,17 @@ public class MainActivity extends AppCompatActivity implements StudentAdapter.cl
     private RecyclerView recyclerView;
     private Intent intent;
 
+
+
     private static StudentAdapter studentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+Log.d("rrrrrrrr","mainactivity ");
         setContentView(R.layout.activity_main);
+        Constants.dbHelper=new DbHelper(this);
+        student=Constants.dbHelper.getAllStudents(StudentTable.TABLE_NAME);
         intent = new Intent(MainActivity.this, StudentDetailsActivity.class);
 
         recyclerView = findViewById(R.id.recycle);
@@ -211,7 +211,6 @@ public class MainActivity extends AppCompatActivity implements StudentAdapter.cl
                         intent.addCategory(CAT_EDIT);
                         intent.putExtra("stuArrList", student);
                         MainActivity.this.startActivityForResult(intent, EDIT);
-                        debug();
 
 
                         break;

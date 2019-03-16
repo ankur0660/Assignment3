@@ -1,5 +1,6 @@
 package com.example.assignment3;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.assignment3.database.tables.StudentTable;
+import com.example.assignment3.util.Constants;
 
 import java.util.ArrayList;
 
@@ -25,30 +29,38 @@ public class StudentDetailsActivity extends AppCompatActivity {
     private String name;
     private String roll;
     private Integer POSITION;
-    private final String CAT_VIEW="view";
-    private final String CAT_EDIT="edit";
-
+    private final String ACTIVITY_EDIT_MODE="edit";
+    private final String ACTIVITY_VIEW_MODE="view";
+    private final String ACTIVITY_NEW_MODE="new";
     private final String ROLL_EXTRA = "rollEdit";
     private final String NAME_EXTRA = "nameEdit";
+private String mode=ACTIVITY_NEW_MODE;
+private String initialRoll;
+    private ContentValues record;
 
 
-    /*
- initialize ArrayList,intent,poisition,rollEdit,nameEdit,Button
- */
     /*
      @Params View Button
      on Click function for adding a new student
      */
-    public void onClickSave(View view) {
-
+    public void makeAndSendStudent() {
+record=new ContentValues();
 
         name = nameEdit.getText().toString();
         roll = rollEdit.getText().toString();
         if (uniqueValidation()) {
 //MainActivity.debug();
+            record.put(StudentTable.COL_NAME,name);
+            record.put(StudentTable.COL_ROLL,Integer.parseInt(roll));
+            if(mode.equals(ACTIVITY_NEW_MODE)) {
+                Constants.dbHelper.insertQuery(StudentTable.TABLE_NAME, record);
+            }
+            else if(mode.equals(ACTIVITY_EDIT_MODE)){
+                Constants.dbHelper.updateQuery(new StudentTable(),record," _Roll = ?", new String[]{initialRoll});
+            }
             intent.putExtra(NAME_EXTRA, name);
             intent.putExtra(ROLL_EXTRA, roll);
-            MainActivity.debug();
+
             setResult(RESULT_OK, intent);
 
             Toast toast = Toast.makeText(this, getString(R.string.toast_stu_added), Toast.LENGTH_LONG);
@@ -59,7 +71,9 @@ public class StudentDetailsActivity extends AppCompatActivity {
 
 
     }
-
+     /*
+      initialize ArrayList,intent,poisition,rollEdit,nameEdit,Button
+     */
 
     private void init() {
         intent = getIntent();
@@ -69,9 +83,15 @@ public class StudentDetailsActivity extends AppCompatActivity {
         nameEdit = findViewById(R.id.nameEdit);
         rollEdit = findViewById(R.id.rollEdit);
         btn = findViewById(R.id.btn);
-        btn.setText(getString(R.string.add_new_student));
         studentArrayList = (ArrayList<Student>) getIntent().getSerializableExtra("stuArrList");
+        btn.setText(getString(R.string.add_new_student));
+        btn.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                makeAndSendStudent();
+            }
+        });
 
     }
 
@@ -80,37 +100,26 @@ public class StudentDetailsActivity extends AppCompatActivity {
 
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_student_details_enter);
         init();
 
-        if (getIntent().hasCategory(CAT_EDIT) || getIntent().hasCategory(CAT_VIEW)) {
+        if (getIntent().hasCategory(ACTIVITY_EDIT_MODE) || getIntent().hasCategory(ACTIVITY_VIEW_MODE)) {
 
 
-            if (getIntent().hasCategory(CAT_VIEW)) {
+            if (getIntent().hasCategory(ACTIVITY_VIEW_MODE)) {
                 modifyUserInterface();
             } else {
                 nameEdit.setText(studentArrayList.get(POSITION).getName());
+
                 rollEdit.setText(studentArrayList.get(POSITION).getRoll());
+                initialRoll=studentArrayList.get(POSITION).getRoll();
                 btn.setText(getString(R.string.Edit));
+                mode=ACTIVITY_EDIT_MODE;
 
 
-                btn.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        name = nameEdit.getText().toString();
-                        roll = rollEdit.getText().toString();
-                        if (uniqueValidation()) {
-
-                            intent.putExtra(NAME_EXTRA, nameEdit.getText().toString());
-                            intent.putExtra(ROLL_EXTRA, rollEdit.getText().toString());
-                            setResult(RESULT_OK, intent);
-                            finish();
-                        }
 
 
-                    }
-                });
             }
 
 

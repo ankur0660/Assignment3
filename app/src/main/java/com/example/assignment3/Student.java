@@ -6,7 +6,7 @@ import java.io.Serializable;
 public class Student implements Serializable, Comparable,Cloneable {
     private String name;
     private String roll;
-Student(String name, String roll){
+public Student(String name, String roll){
     this.name=name;
     this.roll=roll;
 

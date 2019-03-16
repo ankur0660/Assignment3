@@ -32,7 +32,6 @@
     <Button
         android:id="@+id/btn"
         android:text="Add Student"
-        android:onClick="onClickSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
