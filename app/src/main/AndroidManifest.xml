@@ -8,22 +8,24 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        >
+        android:theme="@style/AppTheme">
+        <activity android:name=".ShowStudentActivity"></activity>
+
+        <service
+            android:name=".service.CustomIntentService"
+            android:exported="false" />
+        <service
+            android:name=".service.dataStoreService"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity android:name=".StudentDetailsActivity">
-
             <intent-filter>
-                            <category android:name="android.intent.category.DEFAULT">
-
-            </category>
-                <category android:name="view">
-
-                </category>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="view" />
             </intent-filter>
-
         </activity>
-        <activity android:name=".MainActivity"
-            >
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

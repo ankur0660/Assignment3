@@ -6,6 +6,9 @@
     <string name="error_name">enter a name</string>
     <string name="dup_error">duplicate roll</string>
     <string name="toast_stu_added">Student Added</string>
+    <string name="service_dialog">SERVICE</string>
+    <string name="intservice_dialog">INTENT_SERVICE</string>
+    <string name="async_dialog">ASYNC</string>
     <string-array name="sort">
         <item> Sort By Name </item>
         <item> Sort By Roll No </item>

@@ -5,11 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.Build;
-import android.util.Log;
 
-import com.example.assignment3.MainActivity;
-import com.example.assignment3.Student;
+import com.example.assignment3.model.Student;
 import com.example.assignment3.database.tables.StudentTable;
 import com.example.assignment3.database.tables.Table;
 
@@ -50,6 +47,9 @@ createTable(StudentTable.CREATE_TABLE_QUERY);//change krna
 
         ArrayList<Student> students=new ArrayList<>();
 cursor.moveToFirst();
+if(cursor.getCount()==0){
+    return students;
+}
     do{
 
         String name=cursor.getString(0);
@@ -74,20 +74,21 @@ cursor.moveToFirst();
 
             db.execSQL(query);
 
+
         }
 
 
     }
 
     public void updateQuery(Table table, ContentValues record, String where, String [] args) {
-        MainActivity.debug();
-        Log.d("llllllll","ssasas");
 
-        Log.d("llllllll",where);
-    Log.d("llllllll",table.getTableName());
-        Log.d("llllllll",args[0]);
         db=this.getWritableDatabase();
 
-        db.update("Student",record,where,args);
+        db.update(table.getTableName(),record,where,args);
+    }
+    public void deleteQuery(Table table, String where, String [] args){
+        db=this.getWritableDatabase();
+
+        db.delete(table.getTableName(),where,args);
     }
 }

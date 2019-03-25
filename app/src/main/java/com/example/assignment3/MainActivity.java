@@ -18,7 +18,9 @@ import android.widget.AdapterView;
 
 import com.example.assignment3.database.DbHelper;
 import com.example.assignment3.database.tables.StudentTable;
+import com.example.assignment3.model.Student;
 import com.example.assignment3.util.Constants;
+
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -44,16 +46,15 @@ public class MainActivity extends AppCompatActivity implements StudentAdapter.cl
     private Intent intent;
 
 
-
     private static StudentAdapter studentAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-Log.d("rrrrrrrr","mainactivity ");
+
         setContentView(R.layout.activity_main);
-        Constants.dbHelper=new DbHelper(this);
-        student=Constants.dbHelper.getAllStudents(StudentTable.TABLE_NAME);
+        Constants.dbHelper = new DbHelper(this);
+        student = Constants.dbHelper.getAllStudents(StudentTable.TABLE_NAME);
         intent = new Intent(MainActivity.this, StudentDetailsActivity.class);
 
         recyclerView = findViewById(R.id.recycle);
@@ -215,7 +216,9 @@ Log.d("rrrrrrrr","mainactivity ");
 
                         break;
                     case DELETE:
+                        Constants.dbHelper.deleteQuery(new StudentTable(), StudentTable.COL_ROLL + "=?", new String[]{student.get(position).getRoll()});
                         student.remove(position);
+
                         MainActivity.studentAdapter.notifyDataSetChanged();
 
 

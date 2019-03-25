@@ -1,24 +1,16 @@
 package com.example.assignment3.Adapter;
 
-import android.app.AlertDialog;
-import android.app.usage.UsageEvents;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.assignment3.MainActivity;
 import com.example.assignment3.R;
-import com.example.assignment3.Student;
-import com.example.assignment3.StudentDetailsActivity;
+import com.example.assignment3.model.Student;
 
 
 import java.util.ArrayList;

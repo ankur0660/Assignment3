@@ -1,20 +1,28 @@
 package com.example.assignment3;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.example.assignment3.database.tables.StudentTable;
+import com.example.assignment3.model.Student;
+import com.example.assignment3.service.CustomIntentService;
+import com.example.assignment3.service.dataStoreService;
+import com.example.assignment3.task.StudentDataBaseUpdateTask;
 import com.example.assignment3.util.Constants;
 
 import java.util.ArrayList;
+
+import static com.example.assignment3.util.Constants.NAME_EXTRA;
+import static com.example.assignment3.util.Constants.ROLL_EXTRA;
 
 
 public class StudentDetailsActivity extends AppCompatActivity {
@@ -29,13 +37,13 @@ public class StudentDetailsActivity extends AppCompatActivity {
     private String name;
     private String roll;
     private Integer POSITION;
-    private final String ACTIVITY_EDIT_MODE="edit";
-    private final String ACTIVITY_VIEW_MODE="view";
-    private final String ACTIVITY_NEW_MODE="new";
-    private final String ROLL_EXTRA = "rollEdit";
-    private final String NAME_EXTRA = "nameEdit";
-private String mode=ACTIVITY_NEW_MODE;
-private String initialRoll;
+    private final int SERVICE = 0;
+    private final int INTENT_SERVICE = 1;
+    private final int ASYNC_TASK = 2;
+
+
+    private String mode = Constants.ACTIVITY_NEW_MODE;
+    private String initialRoll;
     private ContentValues record;
 
 
@@ -43,31 +51,35 @@ private String initialRoll;
      @Params View Button
      on Click function for adding a new student
      */
-    public void makeAndSendStudent() {
-record=new ContentValues();
+    public Intent makeAndSendStudent() {
+        intent = new Intent();
 
+        record = new ContentValues();
         name = nameEdit.getText().toString();
         roll = rollEdit.getText().toString();
         if (uniqueValidation()) {
-//MainActivity.debug();
-            record.put(StudentTable.COL_NAME,name);
-            record.put(StudentTable.COL_ROLL,Integer.parseInt(roll));
-            if(mode.equals(ACTIVITY_NEW_MODE)) {
-                Constants.dbHelper.insertQuery(StudentTable.TABLE_NAME, record);
-            }
-            else if(mode.equals(ACTIVITY_EDIT_MODE)){
-                Constants.dbHelper.updateQuery(new StudentTable(),record," _Roll = ?", new String[]{initialRoll});
-            }
+
             intent.putExtra(NAME_EXTRA, name);
             intent.putExtra(ROLL_EXTRA, roll);
-
             setResult(RESULT_OK, intent);
+            if (mode.equals(Constants.ACTIVITY_NEW_MODE)) {
 
-            Toast toast = Toast.makeText(this, getString(R.string.toast_stu_added), Toast.LENGTH_LONG);
-            toast.show();
-            finish();
+                intent.putExtra("mode", Constants.ACTIVITY_NEW_MODE);
+                intent.setClass(this, dataStoreService.class);
+                return intent;
 
-        }
+            } else {
+                intent.putExtra("mode", Constants.ACTIVITY_EDIT_MODE);
+                intent.putExtra("initialRoll", initialRoll);
+
+                return intent;
+
+
+            }
+
+
+        } else
+            return null;
 
 
     }
@@ -78,7 +90,7 @@ record=new ContentValues();
     private void init() {
         intent = getIntent();
         if (getIntent().hasExtra("position")) {
-        POSITION = getIntent().getIntExtra("position", -1);
+            POSITION = getIntent().getIntExtra("position", -1);
         }
         nameEdit = findViewById(R.id.nameEdit);
         rollEdit = findViewById(R.id.rollEdit);
@@ -89,10 +101,44 @@ record=new ContentValues();
 
             @Override
             public void onClick(View v) {
-                makeAndSendStudent();
+                showAlert();
+
+//                makeAndSendStudent();
             }
         });
 
+    }
+
+    private void showAlert() {
+        String choice[] = {getString(R.string.service_dialog), getString(R.string.intservice_dialog), getString(R.string.async_dialog)};
+        final Intent intent = makeAndSendStudent();
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setItems(choice, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case SERVICE:
+                        intent.setClass(StudentDetailsActivity.this, dataStoreService.class);
+                        startService(intent);
+                        finish();
+                        break;
+                    case INTENT_SERVICE:
+                        Log.d("iiiiiiiiiiiiii", "iiiiiiiiii");
+                        intent.setClass(StudentDetailsActivity.this, CustomIntentService.class);
+                        startService(intent);
+
+                        finish();
+                        break;
+                    case ASYNC_TASK:
+                        new StudentDataBaseUpdateTask().execute(intent);
+                        finish();
+                        break;
+
+                }
+
+            }
+        });
+        builder.show();
     }
 
     @Override
@@ -104,20 +150,18 @@ record=new ContentValues();
         setContentView(R.layout.activity_student_details_enter);
         init();
 
-        if (getIntent().hasCategory(ACTIVITY_EDIT_MODE) || getIntent().hasCategory(ACTIVITY_VIEW_MODE)) {
+        if (getIntent().hasCategory(Constants.ACTIVITY_EDIT_MODE) || getIntent().hasCategory(Constants.ACTIVITY_VIEW_MODE)) {
 
 
-            if (getIntent().hasCategory(ACTIVITY_VIEW_MODE)) {
+            if (getIntent().hasCategory(Constants.ACTIVITY_VIEW_MODE)) {
                 modifyUserInterface();
             } else {
                 nameEdit.setText(studentArrayList.get(POSITION).getName());
 
                 rollEdit.setText(studentArrayList.get(POSITION).getRoll());
-                initialRoll=studentArrayList.get(POSITION).getRoll();
+                initialRoll = studentArrayList.get(POSITION).getRoll();
                 btn.setText(getString(R.string.Edit));
-                mode=ACTIVITY_EDIT_MODE;
-
-
+                mode = Constants.ACTIVITY_EDIT_MODE;
 
 
             }
@@ -152,8 +196,6 @@ record=new ContentValues();
         rollEdit.setTypeface(null, Typeface.ITALIC);
         rollEdit.setTextSize(50);
     }
-
-
 
 
     /*
