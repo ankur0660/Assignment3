@@ -123,7 +123,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
                         finish();
                         break;
                     case INTENT_SERVICE:
-                        Log.d("iiiiiiiiiiiiii", "iiiiiiiiii");
+//                        Log.d("iiiiiiiiiiiiii", "iiiiiiiiii");
                         intent.setClass(StudentDetailsActivity.this, CustomIntentService.class);
                         startService(intent);
 
@@ -147,7 +147,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_student_details_enter);
+//        setContentView(R.layout.activity_student_details_enter);
         init();
 
         if (getIntent().hasCategory(Constants.ACTIVITY_EDIT_MODE) || getIntent().hasCategory(Constants.ACTIVITY_VIEW_MODE)) {

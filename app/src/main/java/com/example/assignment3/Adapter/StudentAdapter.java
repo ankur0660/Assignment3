@@ -9,81 +9,75 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.assignment3.MainActivity;
 import com.example.assignment3.R;
 import com.example.assignment3.model.Student;
 
 
 import java.util.ArrayList;
 
-public class StudentAdapter  extends RecyclerView.Adapter<StudentAdapter.viewholder>{
-ArrayList<Student> students;
-Context ctx;
+public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.viewholder> {
+    ArrayList<Student> students;
+    Object ctx;
 
-private clickRecycleItemListener mListener;
+    private clickRecycleItemListener mListener;
 
-public StudentAdapter(ArrayList<Student> students, Context ctx){
-this.students=students;
-this.ctx=ctx;
+    public StudentAdapter(ArrayList<Student> students, Object ctx) {
+        this.students = students;
+        this.ctx = ctx;
 
-}
+    }
+
+    @NonNull
+    @Override
+
+    public StudentAdapter.viewholder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+
+        View view = inflater.inflate(R.layout.student_view, viewGroup, false);
+
+        return new viewholder(view, viewGroup.getContext());
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull StudentAdapter.viewholder viewHolder, int i) {
+        Log.d("aaa", String.valueOf(i));
+
+        viewHolder.name.setText(students.get(i).getName());
+        viewHolder.roll.setText(students.get(i).getRoll());
 
 
-        @NonNull
-        @Override
+    }
 
-        public StudentAdapter.viewholder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            LayoutInflater inflator=LayoutInflater.from(viewGroup.getContext());
-            String sa=viewGroup.getClass().toString();
+    @Override
+    public int getItemCount() {
+        return students.size();
 
-            Log.d("abc",sa);
+    }
+
+    public class viewholder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView name, roll;
+
+        public viewholder(@NonNull View itemView, Context ctx) {
+
+            super(itemView);
+            itemView.setOnClickListener(this);
+            name = itemView.findViewById(R.id.nameedit);
+            roll = itemView.findViewById(R.id.Roll);
 
 
-            View view= (View) inflator.inflate(R.layout.student_view,viewGroup,false);
-
-
-           // Log.d("abc",view.getContext().toString());
-
-
-            return new viewholder(view,viewGroup.getContext());
         }
 
         @Override
-        public void onBindViewHolder(@NonNull StudentAdapter.viewholder viewHolder, int i) {
-viewHolder.name.setText(students.get(i).getName());
-    viewHolder.roll.setText(students.get(i).getRoll());
-
-
+        public void onClick(View v) {
+            mListener = (clickRecycleItemListener) ctx;
+            mListener.onItemClick(getAdapterPosition());
         }
+    }
 
-        @Override
-        public int getItemCount() {
-            return students.size();
+    public interface clickRecycleItemListener {
+        void onItemClick(int position);
 
-        }
-
-        public class viewholder extends RecyclerView.ViewHolder implements View.OnClickListener{
-            TextView name,roll;
-
-            public viewholder(@NonNull View itemView,Context ctx) {
-
-                super(itemView);
-itemView.setOnClickListener(this);
-                name= itemView.findViewById(R.id.nameedit);
-                roll= itemView.findViewById(R.id.Roll);
-
-
-            }
-
-            @Override
-            public void onClick(View v) {
-                mListener=(clickRecycleItemListener)ctx;
-                mListener.onItemClick(getAdapterPosition());
-            }
-        }
-
-public interface clickRecycleItemListener{
-    void onItemClick(int position);
-
-}
+    }
 }
 

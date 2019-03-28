@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.assignment3.MainActivity;
 import com.example.assignment3.model.Student;
 import com.example.assignment3.database.tables.StudentTable;
 import com.example.assignment3.database.tables.Table;
@@ -40,6 +41,7 @@ createTable(StudentTable.CREATE_TABLE_QUERY);//change krna
 
     }
     public ArrayList<Student> getAllStudents(String tableName){
+        MainActivity.debug("database retrieve");
        SQLiteDatabase db=this.getWritableDatabase();
 
 
